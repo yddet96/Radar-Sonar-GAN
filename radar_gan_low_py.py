@@ -136,12 +136,6 @@ def main():
   
   d_vars = [Wd1, bd1, Wd2, bd2, Wd3, bd3, Wdf, bdf, Wdo, bdo]
   pool_sz = 4 
-    
-  '''
-  Retrieve network variables for each genrator and discriminator
-  '''
-#   gen_vars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope="GAN/Generator")
-#   disc_vars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope="GAN/Discriminator")
   
   '''
   Define GAN
@@ -160,12 +154,6 @@ def main():
 
   gen_loss = tf.nn.sigmoid_cross_entropy_with_logits( logits=f_dec, labels=tf.ones_like(f_dec) )
   gen_loss = tf.reduce_mean(gen_loss)
-
-#   disc_loss = -tf.log(r_dec) - tf.log( tf.ones_like(f_dec) - f_dec)
-#   disc_loss = tf.reduce_mean(disc_loss)
-  
-#   gen_loss = -tf.log(f_dec)
-#   gen_loss = tf.reduce_mean(gen_loss)
   
   '''
   Define optimizers
@@ -213,23 +201,19 @@ def main():
         x_batch = data[batch_idx, :,:]
         z_batch = np.random.random((batch_size, z_init))
 
-        d_loss, _, r_test, f_test = sess.run([disc_loss, disc_step, r_dec, f_dec], feed_dict = {x: x_batch, z: z_batch})
-#         g_loss, _ = sess.run([gen_loss, gen_step], feed_dict = {z: z_batch})
-#         d_loss, g_loss, _, _, r_test, f_test = sess.run([disc_loss, gen_loss, disc_step, gen_step, r_dec, f_dec], feed_dict = {x: x_batch, z: z_batch} )
+        d_loss, _ = sess.run([disc_loss, disc_step], feed_dict = {x: x_batch, z: z_batch})
+        g_loss, _ = sess.run([gen_loss, gen_step], feed_dict = {z: z_batch})
 
-#         print("\tminibatch %2d ==> d_loss: %f   g_loss: %f" % (b, d_loss, g_loss))
         print("\tminibatch %2d ==> d_loss: %f " % (b, d_loss))
-        print("r", r_test.T)
-        print("f", f_test.T)
 
-#         g_loss_list.append(g_loss)
+        g_loss_list.append(g_loss)
         d_loss_list.append(d_loss)
     
       '''
       At the end of each epoch, show the loss plots
       '''
       plt.figure(1)
-#       plt.plot(g_loss_list)
+      plt.plot(g_loss_list)
       plt.plot(d_loss_list)
       plt.legend(["Generator Loss","Discriminator Loss"])
       plt.show()
@@ -243,7 +227,7 @@ def main():
     Plot loss
     '''    
     plt.figure(1)
-#     plt.plot(g_loss_list)
+    plt.plot(g_loss_list)
     plt.plot(d_loss_list)
     plt.legend(["Generator Loss","Discriminator Loss"])
     plt.savefig("/content/gdrive/My Drive/MS Project/loss.png")
@@ -254,3 +238,6 @@ def main():
 
 if __name__ == '__main__':
   main()
+
+
+
