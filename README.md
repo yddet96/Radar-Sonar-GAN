@@ -14,3 +14,4 @@ layers also uses a leaky ReLU activation except for the output layer, which cons
 activation function.
 
 Both networks were adversarially trained using a stochastic approach and the AdamOptimizer method within Tensorflow.
+The training process was executed on Googel Colab servers with GPU accelerated runtime.
